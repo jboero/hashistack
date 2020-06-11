@@ -1,0 +1,98 @@
+{
+    "variables": {
+        "checksum": "15aafc41f1d1cf09eb4cc070c7e0bf7d461668475bd9797fb00f98f99a24e8f5",
+        "url": "http://mirror.cogentco.com/pub/linux/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-20191219-dvd1.iso"
+    },
+    "builders": [{
+        "type": "qemu",
+        "vm_name": "tfe.qcow2",
+        "accelerator": "kvm",
+        "boot_command": [
+            "<esc><wait>",
+            "vmlinuz initrd=initrd.img ",
+            "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks-centos8streams.cfg",
+            "<enter>"
+        ],
+        "boot_key_interval": "1ms",
+        "boot_wait": "1s",
+        "cpus": 8,
+        "disk_interface": "virtio",
+        "disk_size": "100G",
+        "format": "qcow2",
+        "headless": false,
+        "http_directory": "http",
+        "iso_checksum": "{{user `checksum`}}",
+        "iso_url": "{{user `url`}}",
+        "memory": 8192,
+        "net_device": "virtio-net",
+        "shutdown_command": "systemctl shutdown",
+        "ssh_password": "packer",
+        "ssh_username": "root",
+        "ssh_timeout": "20m"
+    }, {
+        "type": "virtualbox-iso",
+        "guest_os_type": "RedHat_64",
+        "iso_checksum": "{{user `checksum`}}",
+        "iso_url": "{{user `url`}}",
+        "headless": false,
+        "memory": 8192,
+        "cpus": 8,
+        "boot_wait": "20s",
+        "boot_command": [
+            "<esc><wait>",
+            "vmlinuz initrd=initrd.img ",
+            "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks-centos8streams.cfg",
+            "<enter>"
+        ],
+        "boot_keygroup_interval": "5s",
+        "pause_before_connecting": "1m",
+        "communicator": "ssh",
+        "disk_size": 100000,
+        "http_directory": "http",
+        "ssh_username": "root",
+        "ssh_password": "packer",
+        "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.10/VBoxGuestAdditions_6.1.10.iso",
+        "shutdown_command": "shutdown -P now",
+        "usb": true
+    }, {
+        "type": "googlecompute",
+        "project_id": "gb-playground",
+        "source_image_project_id": ["centos-cloud"],
+        "source_image_family": "centos-8",
+        "source_image": "centos-8-v20200521",
+        "machine_type": "n1-standard-1",
+        "zone": "europe-west4-a",
+        "communicator": "ssh",
+        "disk_size": 100,
+        "disk_type": "pd-standard",
+        "image_name": "packer-tfe",
+        "tags": [
+            "owner", "jboero"
+        ],
+        "ssh_username": "centos",
+        "vault_gcp_oauth_engine": "gcp/token/packer",
+        "metadata": {
+            "enable-oslogin": "false",
+            "block-project-ssh-keys": "false",
+            "ssh-keys": "<YOURSHERE>"
+        },
+        "state_timeout": "5m"
+    }],
+    "provisioners": [{
+        "inline": [
+            "sudo su -",
+            "setenforce 0",
+            "dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
+            "yes | dnf install -y docker-ce --nobest",
+            "dnf copr enable boeroboy/hashicorpcopr",
+            "sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config",
+            "firewall-cmd --permanent --zone=trusted --add-interface=docker0",
+            "firewall-cmd --reload",
+            "systemctl enable --now docker",
+            "sed -E -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config",
+            "yes | dnf -y install packer terraform consul vault nomad",
+            "curl https://install.terraform.io/ptfe/stable | bash"
+        ],
+        "type": "shell"
+    }]
+}
