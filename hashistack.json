@@ -132,7 +132,7 @@
             "sed -E -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config",
             "curl -o install.sh https://install.terraform.io/ptfe/stable",
             "chmod +x install.sh",
-            "./install.sh < answers.txt"
+            "./install.sh < answers"
         ],
         "type": "shell"
     }]
