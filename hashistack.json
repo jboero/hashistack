@@ -1,0 +1,137 @@
+{
+    "$schema": "home/jboero/code/hashicorp-schemas/JSON/packer/1.5/manifest.json",
+    "variables": {
+        "checksum": "15aafc41f1d1cf09eb4cc070c7e0bf7d461668475bd9797fb00f98f99a24e8f5",
+        "url": "http://mirror.cogentco.com/pub/linux/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-20191219-dvd1.iso",
+        "image_name": "packer_hashistack"
+    },
+    "builders": [{
+        "type": "qemu",
+        "accelerator": "none",
+        "boot_command": [
+            "<esc><wait>",
+            "vmlinuz initrd=initrd.img ",
+            "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks-centos8streams.cfg",
+            "<enter>"
+        ],
+        "boot_key_interval": "1ms",
+        "boot_wait": "1s",
+        "cpus": 8,
+        "disk_interface": "virtio",
+        "disk_size": "100G",
+        "format": "qcow2",
+        "headless": false,
+        "http_directory": "http",
+        "iso_checksum": "none",
+        "iso_url": "{{user `url`}}",
+        "memory": 8192,
+        "net_device": "virtio-net",
+        "shutdown_command": "systemctl shutdown",
+        "ssh_password": "packer",
+        "ssh_username": "root",
+        "ssh_timeout": "20m",
+        "vm_name": "{{user `image_name`}}"
+    }, {
+        "type": "virtualbox-iso",
+        "guest_os_type": "RedHat_64",
+        "iso_checksum": "none",
+        "iso_url": "{{user `url`}}",
+        "headless": false,
+        "memory": 8192,
+        "cpus": 8,
+        "boot_wait": "4s",
+        "boot_command": [
+            "<esc><wait>",
+            "vmlinuz initrd=initrd.img ",
+            "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks-centos8streams.cfg",
+            "<enter>"
+        ],
+        "pause_before_connecting": "10s",
+        "communicator": "ssh",
+        "disk_size": 100000,
+        "http_directory": "http",
+        "ssh_username": "root",
+        "ssh_password": "packer",
+        "shutdown_command": "shutdown -P now",
+        "ssh_timeout": "15m",
+        "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.10/VBoxGuestAdditions_6.1.10.iso",
+        "guest_additions_sha256": "62a0c6715bee164817a6f58858dec1d60f01fd0ae00a377a75bbf885ddbd0a61",
+        "guest_additions_mode": "attach",
+        "vm_name": "{{user `image_name`}}",
+        "output_filename": "{{user `image_name`}}"
+    }, {
+        "type": "googlecompute",
+        "project_id": "gb-playground",
+        "source_image_project_id": ["centos-cloud"],
+        "source_image_family": "centos-8",
+        "source_image": "centos-8-v20200521",
+        "machine_type": "n1-standard-1",
+        "zone": "europe-west4-a",
+        "communicator": "ssh",
+        "disk_size": 100,
+        "disk_type": "pd-standard",
+        "image_name": "{{user `image_name`}}",
+        "tags": [
+            "BuiltWith", "packer"
+        ],
+        "ssh_username": "centos",
+        "vault_gcp_oauth_engine": "gcp/token/packer",
+        "metadata": {
+            "enable-oslogin": "false",
+            "block-project-ssh-keys": "false",
+            "ssh-keys": "<YOURSHERE>"
+        },
+        "state_timeout": "5m"
+    }, {
+        "type": "amazon-ebs",
+        "use_vault_aws_engine": true,
+        "region": "eu-west-1",
+        "source_ami": "ami-084ddc7afd435442a",
+        "instance_type": "t2.medium",
+        "ssh_username": "centos",
+        "ami_name": "hashistack-centos8",
+        "tags": {
+            "OS_Version": "CentOS8",
+            "Base_AMI_Name": "{{ .SourceAMIName }}"
+        }
+    }, {
+        "type": "azure-arm",
+        "managed_image_resource_group_name": "packer",
+        "managed_image_name": "{{user `image_name`}}",
+
+        "os_type": "Linux",
+        "image_publisher": "Red Hat",
+        "image_offer": "CentOS",
+        "image_sku": "16.04-LTS",
+        "location": "West EU",
+        "vm_size": "Standard_DS2_v2"
+    }],
+    "provisioners": [{
+        "type": "file",
+        "destination": "/etc/replicated.conf",
+        "source": "./http/replicated.conf",
+        "direction": "upload"
+    }, {
+        "type": "file",
+        "destination": "/root/answers",
+        "source": "./http/answers",
+        "direction": "upload"
+    }, {
+        "inline": [
+            "sudo su -",
+            "setenforce 0",
+            "yes | dnf copr enable boeroboy/hashicorp",
+            "yes | dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
+            "yes | dnf install -y docker-ce packer consul vault nomad terraform --nobest",
+            "sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config",
+            "firewall-cmd --permanent --zone=trusted --add-interface=docker0",
+            "firewall-cmd --reload",
+            "systemctl enable --now docker",
+            "sed -E -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config",
+            "curl -o install.sh https://install.terraform.io/ptfe/stable",
+            "chmod +x install.sh",
+            "./install.sh < answers.txt"
+        ],
+        "type": "shell"
+    }]
+}
