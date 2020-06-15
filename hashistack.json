@@ -129,6 +129,7 @@
             "firewall-cmd --zone=public --permanent --add-port=443/tcp",
             "firewall-cmd --reload",
             "systemctl enable --now docker",
+            "systemctl enable consul vault nomad",
             "sed -E -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config",
             "curl -o install.sh https://install.terraform.io/ptfe/stable",
             "chmod +x install.sh",
