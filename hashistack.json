@@ -12,6 +12,17 @@
         "ssh_username": "packer",
         "ssh_password": "packer",
         "shutdown_command": "shutdown -P now"
+        "boot_command": [
+            "<esc><wait>",
+            "vmlinuz initrd=initrd.img ",
+            "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks-centos8streams.cfg",
+            "<enter>"
+        ],
+        "boot_key_interval": "1ms",
+        "boot_wait": "1s",
+        "cpus": 8,
+        "memory": 8192,
+        "disk_size": "100G"
     }, {
         "type": "qemu",
         "accelerator": "none",
