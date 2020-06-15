@@ -5,6 +5,14 @@
         "image_name": "packer_hashistack"
     },
     "builders": [{
+        "type": "vmware-iso",
+        "iso_url": "{{user `url`}}",
+        "iso_checksum": "{{user `checksum`}}",
+        "iso_checksum_type": "sha256",
+        "ssh_username": "packer",
+        "ssh_password": "packer",
+        "shutdown_command": "shutdown -P now"
+    }, {
         "type": "qemu",
         "accelerator": "none",
         "boot_command": [
@@ -23,7 +31,7 @@
         "disk_interface": "virtio",
         "format": "qcow2",
         "http_directory": "http",
-        "iso_checksum": "none",
+        "iso_checksum": "{{user `checksum`}}",
         "iso_url": "{{user `url`}}",
         "shutdown_command": "systemctl shutdown",
         "ssh_password": "packer",
@@ -33,7 +41,7 @@
     }, {
         "type": "virtualbox-iso",
         "guest_os_type": "RedHat_64",
-        "iso_checksum": "none",
+        "iso_checksum": "{{user `checksum`}}",
         "iso_url": "{{user `url`}}",
         "cpus": 8,
         "memory": 8192,
