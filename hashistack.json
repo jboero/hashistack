@@ -11,7 +11,7 @@
         "iso_checksum_type": "sha256",
         "ssh_username": "packer",
         "ssh_password": "packer",
-        "shutdown_command": "shutdown -P now"
+        "shutdown_command": "shutdown -P now",
         "boot_command": [
             "<esc><wait>",
             "vmlinuz initrd=initrd.img ",
@@ -141,7 +141,7 @@
             "yes | dnf copr enable boeroboy/hashicorp",
             "yes | dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
             "yes | dnf config-manager --add-repo=https://download.opensuse.org/repositories/shells:fish:release:3/CentOS_8/shells:fish:release:3.repo",
-            "yes | dnf install -y docker-ce packer consul vault nomad terraform --nobest",
+            "yes | dnf install -y docker-ce packer consul vault nomad terraform tfefs nomadfs consulfs vaultfs --nobest",
             "yes | dnf install -y certbot python-certbot-apache fish nano",
             "sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config",
             "firewall-cmd --permanent --zone=trusted --add-interface=docker0",
