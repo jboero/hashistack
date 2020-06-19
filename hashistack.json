@@ -5,6 +5,25 @@
         "image_name": "packer-hashistack"
     },
     "builders": [{
+        "type": "vmware-iso",
+        "iso_url": "{{user `url`}}",
+        "iso_checksum": "{{user `checksum`}}",
+        "iso_checksum_type": "sha256",
+        "ssh_username": "packer",
+        "ssh_password": "packer",
+        "shutdown_command": "shutdown -P now",
+        "boot_command": [
+            "<esc><wait>",
+            "vmlinuz initrd=initrd.img ",
+            "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks-centos8streams.cfg",
+            "<enter>"
+        ],
+        "boot_key_interval": "1ms",
+        "boot_wait": "1s",
+        "cpus": 8,
+        "memory": 8192,
+        "disk_size": "100G"
+    }, {
         "type": "qemu",
         "accelerator": "kvm",
         "boot_command": [
@@ -33,7 +52,7 @@
     }, {
         "type": "virtualbox-iso",
         "guest_os_type": "RedHat_64",
-        "iso_checksum": "none",
+        "iso_checksum": "{{user `checksum`}}",
         "iso_url": "{{user `url`}}",
         "cpus": 8,
         "memory": 8192,
