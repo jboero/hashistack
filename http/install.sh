@@ -3,15 +3,26 @@ cd /root
 setenforce 0
 mv /tmp/replicated.conf /etc
 mv /tmp/
-yes | dnf copr enable boeroboy/hashicorp
+
+# COPR repo version (open source)
+#yes | dnf copr enable boeroboy/hashicorp
+
+# Hashicorp official repo
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 
 # For EL8:
 #yes | dnf -y install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
 #dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 #yes | dnf install -y docker-ce-3:19.03.11-3.el7 packer consul vault nomad terraform --nobest
 
-yes | dnf install -y docker packer consul vault nomad terraform
+# Packer requires COPR release.
+#yes | dnf install -y docker packer consul vault nomad terraform
+yes | dnf install -y docker consul-enterprise vault-enterprise nomad-enterprise
+
 crontab /tmp/crontab
+
+# Settings for Terraform Enterprise:
 sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
 # Flush all firewall rules to start fresh
 iptables -F
