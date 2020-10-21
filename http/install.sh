@@ -2,7 +2,6 @@
 cd /root
 setenforce 0
 mv /tmp/replicated.conf /etc
-mv /tmp/
 
 # COPR repo version (open source)
 #yes | dnf copr enable boeroboy/hashicorp
@@ -17,7 +16,6 @@ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashi
 #yes | dnf install -y docker-ce-3:19.03.11-3.el7 packer consul vault nomad terraform --nobest
 
 # Packer requires COPR release.
-#yes | dnf install -y docker packer consul vault nomad terraform
 yes | dnf install -y docker consul-enterprise vault-enterprise nomad-enterprise
 
 crontab /tmp/crontab
