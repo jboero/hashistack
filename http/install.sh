@@ -24,6 +24,8 @@ crontab /tmp/crontab
 #dnf -y install grubby
 #grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
 #reboot
+#dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+#dnf install docker-ce
 
 # Settings for Terraform Enterprise:
 sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
