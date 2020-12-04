@@ -20,6 +20,11 @@ yes | dnf install -y docker consul-enterprise vault-enterprise nomad-enterprise
 
 crontab /tmp/crontab
 
+# RHEL 8 Support for TFE/Docker
+#dnf -y install grubby
+#grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+#reboot
+
 # Settings for Terraform Enterprise:
 sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
 # Flush all firewall rules to start fresh
