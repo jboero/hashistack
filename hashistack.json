@@ -1,3 +1,5 @@
+/////DEPRECATED - Migrated to HCL.See hashistack.pkr.hcl instead
+
 {
     "variables": {
         "checksum": "087a5743dc6fd6706d9b961b8147423ddc029451b938364c760d75440eb7be14",
@@ -11,7 +13,7 @@
         "region": "nyc3",
         "size": "512mb",
         "ssh_username": "root"
-    }{
+    }, {
         "type": "vmware-iso",
         "iso_url": "{{user `url`}}",
         "iso_checksum": "{{user `checksum`}}",
@@ -88,8 +90,8 @@
         "type": "googlecompute",
         "project_id": "gb-playground",
         "source_image_project_id": ["centos-cloud"],
-        "source_image_family": "centos-7",
-        "source_image": "centos-7-v20200618",
+        "source_image_family": "centos-stream-8",
+        "source_image": "centos-stream-8-v20210316",
         "machine_type": "n1-standard-1",
         "zone": "europe-west4-a",
         "communicator": "ssh",
