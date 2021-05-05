@@ -5,6 +5,9 @@ mv /tmp/replicated.conf /etc
 sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
+# Full stack
+sudo dnf install -y terraform vault consul nomad boundary waypoint
+
 # Uncomment remaining packages as needed.
 yes | dnf install -y docker-ce # packer consul vault nomad terraform
 systemctl enable --now docker
