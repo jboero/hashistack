@@ -174,4 +174,13 @@ build {
     inline = ["sudo bash -x /tmp/install.sh"]
   }
 
+  hcp_packer_registry {
+    slug        = "hashistack-el"
+    description = "Some nice description about the image which artifact is being published to HCP Packer Registry. =D"
+
+    labels = {
+      "version" = "1.2.0",
+    }
+  }
+
 }
