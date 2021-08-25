@@ -189,6 +189,8 @@ build {
     inline = ["sudo bash -x /tmp/install.sh"]
   }
 
+  # HCP Support experimental.
+  # Use env variables HCP_CLIENT_ID, HCP_CLIENT_SECRET
   hcp_packer_registry {
     slug        = "hashistack-el"
     description = "Some nice description about the image which artifact is being published to HCP Packer Registry. =D"
