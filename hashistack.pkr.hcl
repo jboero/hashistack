@@ -29,7 +29,7 @@ variable "url" {
 data "amazon-ami" "amazon-linux" {
   most_recent = true
 
-  filters {
+  filters = {
     virtualization-type = "hvm"
     root-device-type = "ebs"
     name = "amzn2-ami-minimal-selinux-enforcing-hvm-2*"
