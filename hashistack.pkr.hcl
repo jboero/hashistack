@@ -32,7 +32,7 @@ data "amazon-ami" "amazonLinuxAMI" {
   filters = {
     virtualization-type = "hvm"
     root-device-type = "ebs"
-    name = "amzn2-ami-minimal-selinux-enforcing-hvm-2*x86_64-gp2"
+    name = "amzn2-ami-minimal-selinux-enforcing-hvm-2.0.20210617.0-x86_64-gp2"
   }
 }
 
