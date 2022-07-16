@@ -40,7 +40,7 @@ source "amazon-ebs" "amazonLinuxLATEST" {
   #ami_name      = ""
   instance_type = "t2.small"
   region        = "eu-west-1"
-  source_ami    = data.amazonLinuxAMI.id
+  source_ami    = data.amazon-ami.amazonLinuxAMI.id
   ssh_username  = "ec2-user"
   tags = {
     Base_AMI_Name = "{{ .SourceAMIName }}"
