@@ -28,7 +28,7 @@ variable "url" {
 // Lookup the latest Amazon Linux AMI ID
 data "amazon-ami" "amazon-linux" {
   most_recent = true
-
+  owners = ["amazon"]
   filters = {
     virtualization-type = "hvm"
     root-device-type = "ebs"
