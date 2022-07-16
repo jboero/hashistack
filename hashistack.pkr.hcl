@@ -26,7 +26,7 @@ variable "url" {
 }
 
 // Lookup the latest Amazon Linux AMI ID
-data "amazon-ami" "amazon-linux" {
+data "amazon-ami" "amazonLinuxAMI" {
   most_recent = true
   owners = ["amazon"]
   filters = {
@@ -36,11 +36,11 @@ data "amazon-ami" "amazon-linux" {
   }
 }
 
-source "amazon-ebs" "amazon-linux" {
+source "amazon-ebs" "amazonLinuxLATEST" {
   #ami_name      = ""
   instance_type = "t2.small"
   region        = "eu-west-1"
-  source_ami    = data.aws_ami.amazon-linux.id
+  source_ami    = data.amazonLinuxAMI.id
   ssh_username  = "ec2-user"
   tags = {
     Base_AMI_Name = "{{ .SourceAMIName }}"
