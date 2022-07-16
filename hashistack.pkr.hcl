@@ -26,7 +26,7 @@ variable "url" {
 }
 
 // Lookup the latest Amazon Linux AMI ID
-data "aws_ami" "amazon-linux" {
+data "amazon-ami" "amazon-linux" {
   most_recent = true
 
   filter {
