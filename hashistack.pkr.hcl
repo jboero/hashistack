@@ -30,13 +30,9 @@ data "amazon-ami" "amazon-linux" {
   most_recent = true
 
   filters {
-    name   = "owner-alias"
-    values = ["amazon"]
-  }
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
+    virtualization-type = "hvm"
+    root-device-type = "ebs"
+    name = "amzn2-ami-minimal-selinux-enforcing-hvm-2*"
   }
 }
 
