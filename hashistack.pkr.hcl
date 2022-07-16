@@ -29,7 +29,7 @@ variable "url" {
 data "amazon-ami" "amazon-linux" {
   most_recent = true
 
-  filter {
+  filters {
     name   = "owner-alias"
     values = ["amazon"]
   }
