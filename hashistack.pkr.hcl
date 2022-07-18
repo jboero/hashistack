@@ -30,8 +30,8 @@ data "amazon-ami" "amazonLinuxAMI" {
   most_recent = true
   owners = ["amazon"]
   filters = {
-    #virtualization-type = "hvm"
-    #root-device-type = "ebs"
+    virtualization-type = "hvm"
+    root-device-type = "ebs"
     name = "amzn2-ami-minimal-selinux-enforcing-hvm-2.0.20210617.0-x86_64-gp2"
   }
 }
